@@ -12,7 +12,8 @@
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
-    "dot": "bun cli/main.ts"
+    "dot": "bun cli/main.ts",
+    "build": "bun build --compile cli/main.ts --outfile dot.exe"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.31.0",
