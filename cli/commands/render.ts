@@ -7,11 +7,15 @@ import { parseDotText } from "../../src/io/dottext.ts";
 import { encodeIndexedPNG, encodeRGBAPNG } from "../../src/io/png-encode.ts";
 import { documentToGrid, parseDocument } from "../../src/io/project.ts";
 import { toSVG } from "../../src/io/svg.ts";
+import { toHalfBlock } from "../../src/text/halfblock.ts";
+import { toBraille } from "../../src/text/braille.ts";
+import { toLumaRamp } from "../../src/text/ramp.ts";
+import { toShapeAscii } from "../../src/text/shape-ascii.ts";
 import { parseHexColor } from "./new.ts";
 import type { CommandModule } from "./types.ts";
 
-export const summary = "render a .dot.json / .dot.txt document to png, png8 or svg";
-export const usage = `usage: dot render <in.dot.json|in.dot.txt> [--scale 8] [--gap 1 --gap-color #000000] [--margin 0] [--background #00000000] [--format png|png8|svg] -o out`;
+export const summary = "render a .dot.json / .dot.txt document to image or text";
+export const usage = `usage: dot render <in.dot.json|in.dot.txt> [--scale 8] [--gap 1 --gap-color #000000] [--margin 0] [--background #00000000] [--format png|png8|svg|ansi|braille|ascii|shape-ascii] [-o out]`;
 
 /** Format switch: add a new --format by adding one case to `encode`. */
 function encode(format: string, grid: DotGrid, canvas: CanvasSpec): Uint8Array | string {
@@ -40,7 +44,7 @@ export async function run(argv: string[]): Promise<number> {
   const args = parseArgs(argv);
   const input = args.positional[0];
   const out = flagStr(args, "out");
-  if (!input || !out) throw new InputError("input file and -o are required");
+  if (!input) throw new InputError("input file is required");
   let grid: DotGrid;
   let canvas: CanvasSpec;
   try {
@@ -71,7 +75,32 @@ export async function run(argv: string[]): Promise<number> {
   if (gc) canvas.gapColor = parseHexColor(gc);
   const bg = flagStr(args, "background");
   if (bg) canvas.background = parseHexColor(bg);
-  const format = flagStr(args, "format") ?? (out.endsWith(".svg") ? "svg" : "png");
+  const format = flagStr(args, "format") ?? (out?.endsWith(".svg") ? "svg" : "png");
+  if (["ansi", "braille", "ascii", "shape-ascii"].includes(format)) {
+    let text: string;
+    if (format === "ansi") {
+      const color = flagStr(args, "color");
+      if (color !== undefined && color !== "256") throw new InputError('--color must be "256"');
+      text = toHalfBlock(grid, { color: color === "256" ? "256" : "truecolor" });
+    } else if (format === "braille") {
+      text = toBraille(grid);
+    } else if (format === "ascii") {
+      text = toLumaRamp(grid);
+    } else {
+      const image = renderRGBA(grid, canvas);
+      const cols = flagNum(args, "cols") ?? grid.width;
+      if (!Number.isInteger(cols) || cols < 1) throw new InputError("--cols must be an integer >= 1");
+      text = toShapeAscii(image, { cols });
+    }
+    if (out) {
+      mkdirSync(dirname(out), { recursive: true });
+      writeFileSync(out, text);
+    } else {
+      process.stdout.write(`${text}\n`);
+    }
+    return 0;
+  }
+  if (!out) throw new InputError("output file is required for image formats");
   const data = encode(format, grid, canvas);
   mkdirSync(dirname(out), { recursive: true });
   writeFileSync(out, data);

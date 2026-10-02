@@ -17,7 +17,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
         continue;
       }
       const next = argv[i + 1];
-      if (next !== undefined && !next.startsWith("--")) {
+      if (next !== undefined && (!next.startsWith("-") || /^-\d/.test(next))) {
         flags.set(a.slice(2), next);
         i++;
       } else {
