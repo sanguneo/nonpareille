@@ -23,8 +23,8 @@ export function parseArgs(argv: string[]): ParsedArgs {
       } else {
         flags.set(a.slice(2), true);
       }
-    } else if (a === "-o" && argv[i + 1] !== undefined) {
-      flags.set("out", argv[i + 1] as string);
+    } else if (/^-[a-zA-Z]$/.test(a) && argv[i + 1] !== undefined) {
+      flags.set(a === "-o" ? "out" : a.slice(1), argv[i + 1] as string);
       i++;
     } else {
       positional.push(a);

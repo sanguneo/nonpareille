@@ -7,4 +7,6 @@ import type { CommandModule } from "./commands/types.ts";
 export const commands: Record<string, () => Promise<CommandModule>> = {
   new: () => import("./commands/new.ts"),
   render: () => import("./commands/render.ts"),
+  convert: () => import("./commands/convert.ts"),
+  palette: () => import("./commands/palette.ts"),
 };
