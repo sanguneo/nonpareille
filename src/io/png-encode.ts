@@ -1,4 +1,4 @@
-import { deflateSync } from "node:zlib";
+import { zlibSync } from "fflate";
 import type { RGBAImage } from "../core/types.ts";
 import { InputError } from "../core/types.ts";
 
@@ -108,7 +108,7 @@ export function encodeIndexedPNG(
 
   const parts = [chunk("IHDR", ihdr(width, height, bd, 3)), chunk("PLTE", plte)];
   if (n > 0) parts.push(chunk("tRNS", alphas.subarray(0, n)));
-  parts.push(chunk("IDAT", deflateSync(raw, { level: 9 })));
+  parts.push(chunk("IDAT", zlibSync(raw, { level: 9 })));
   parts.push(chunk("IEND", new Uint8Array(0)));
   return assemble(parts);
 }
@@ -163,7 +163,7 @@ export function encodeRGBAPNG(img: RGBAImage): Uint8Array {
   }
   return assemble([
     chunk("IHDR", ihdr(width, height, 8, 6)),
-    chunk("IDAT", deflateSync(raw, { level: 9 })),
+    chunk("IDAT", zlibSync(raw, { level: 9 })),
     chunk("IEND", new Uint8Array(0)),
   ]);
 }
