@@ -1,0 +1,414 @@
+/*
+ * Nonpareille editor screen (ui/screens/Editor.tsx).
+ * Layout follows changeroa/StyleGallery (docs CC BY 4.0):
+ *   recipe   recipes/command-surface.md — stable command regions (command bar, tool rail,
+ *            stage bar) around the edited canvas; command rows wrap, the shell body scrolls.
+ *   patterns patterns/in-line-grouping/split-nav.md  -> .editor_bar / _primary / _secondary
+ *            patterns/in-line-grouping/wrap-row.md   -> .editor_bar_secondary, .editor_stage_bar,
+ *                                                       .editor_palette_add (reuse .wrap_row from app.css)
+ *            patterns/viewport-shell/panel-layout.md -> .editor_workspace (rail | stage | side panel;
+ *                                                       reflows to two columns, then one)
+ *            patterns/in-line-grouping/reel.md       -> .editor_rail below 720px (horizontal tool scroller)
+ * Visual tokens come from ./tokens.css (Miettes brand). Editor-only layout constants are
+ * declared once on .editor; no raw colors below.
+ */
+
+.editor {
+  --editor-tool-size: 48px;
+  --editor-icon: 20px;
+  --editor-rail-w: 84px;
+  --editor-panel-w: 300px;
+  --editor-stage-h: min(72vh, 760px);
+  --editor-swatch-min: 30px;
+  --editor-reel-item: 68px;
+}
+
+/* ---------- Command bar: split-nav ---------- */
+.editor_bar {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.editor_bar_primary {
+  flex: 1 1 260px;
+  min-inline-size: 0;
+}
+
+.editor_bar_secondary {
+  margin-inline-start: auto;
+}
+
+/* ---------- Workspace: panel-layout ---------- */
+.editor_workspace {
+  display: grid;
+  grid-template-columns: var(--editor-rail-w) minmax(0, 1fr) var(--editor-panel-w);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+/* ---------- Tool rail ---------- */
+.editor_rail {
+  position: sticky;
+  inset-block-start: var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.editor_rail_group {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.editor_rail_group + .editor_rail_group {
+  padding-block-start: var(--space-2);
+  border-block-start: 1px solid var(--line);
+}
+
+.editor_tool {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: var(--space-1);
+  inline-size: 100%;
+  min-block-size: var(--editor-tool-size);
+  padding: var(--space-1);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.editor_tool svg {
+  inline-size: var(--editor-icon);
+  block-size: var(--editor-icon);
+}
+
+.editor_tool:hover {
+  background: var(--crumb);
+  transform: translateY(-1px);
+}
+
+.editor_tool[aria-pressed="true"] {
+  background: var(--brown);
+  color: var(--on-primary);
+}
+
+/* Option that does not apply to the active tool stays reachable but recedes. */
+.editor_tool_idle {
+  color: var(--muted);
+}
+
+.editor_tool_label {
+  white-space: nowrap;
+}
+
+/* ---------- Stage ---------- */
+.editor_stage {
+  display: grid;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.editor_zoom {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.editor_select {
+  inline-size: auto;
+  min-inline-size: 0;
+  min-block-size: var(--control-h-sm);
+  font-size: var(--text-sm);
+}
+
+.editor_toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--control-h-sm);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
+.editor_toggle input {
+  inline-size: 18px;
+  block-size: 18px;
+  margin: 0;
+  accent-color: var(--brown);
+}
+
+.editor_stage_meta {
+  margin-inline-start: auto;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.editor_stage_frame {
+  position: relative;
+}
+
+.editor_viewport {
+  block-size: var(--editor-stage-h);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.editor_viewport:focus-visible {
+  border-radius: var(--radius-lg);
+}
+
+/* Centers a canvas smaller than the viewport; grows with a larger one so it scrolls from 0. */
+.editor_viewport_inner {
+  display: grid;
+  place-items: center;
+  inline-size: max-content;
+  min-inline-size: 100%;
+  min-block-size: 100%;
+}
+
+.editor_canvas_wrap {
+  position: relative;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.editor_canvas_wrap_pick {
+  cursor: copy;
+}
+
+.editor_canvas_wrap .pixel_canvas {
+  max-inline-size: none;
+}
+
+.editor_gridlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(to right, var(--line-strong) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line-strong) 1px, transparent 1px);
+}
+
+.editor_cursor {
+  position: absolute;
+  pointer-events: none;
+  box-shadow: 0 0 0 1px var(--crust), inset 0 0 0 1px var(--paper);
+}
+
+.editor_hint {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: var(--space-5);
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--space-4);
+  pointer-events: none;
+}
+
+.editor_hint span {
+  padding: var(--space-2) var(--space-4);
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-card);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+/* ---------- Side panel ---------- */
+.editor_panel {
+  display: grid;
+  gap: var(--space-4);
+  min-inline-size: 0;
+}
+
+.editor_palette {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.editor_swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--editor-swatch-min), 1fr));
+  gap: var(--space-2);
+}
+
+.editor_swatch {
+  aspect-ratio: 1;
+  inline-size: 100%;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--swatch);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.editor_swatch:hover {
+  transform: translateY(-1px);
+}
+
+.editor_swatch[aria-pressed="true"] {
+  outline: 3px solid var(--crust);
+  outline-offset: 2px;
+}
+
+.editor_swatch_clear {
+  background-color: var(--checker-a);
+  background-image: conic-gradient(var(--checker-b) 25%, var(--checker-a) 0 50%, var(--checker-b) 0 75%, var(--checker-a) 0);
+  background-size: 50% 50%;
+}
+
+.editor_color_input {
+  inline-size: var(--control-h);
+  block-size: var(--control-h);
+  padding: var(--space-1);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  cursor: pointer;
+}
+
+.editor_hex {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.editor_meta {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.editor_meta strong {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+/* ---------- New canvas dialog ---------- */
+.editor_dialog {
+  inline-size: min(92vw, 440px);
+  max-inline-size: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+}
+
+.editor_dialog::backdrop {
+  background: color-mix(in srgb, var(--ink) 40%, transparent);
+}
+
+.editor_dialog_card {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lift);
+}
+
+.editor_dialog_fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.editor_dialog_actions {
+  justify-content: flex-end;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .editor_workspace {
+    grid-template-columns: var(--editor-rail-w) minmax(0, 1fr);
+  }
+
+  .editor_panel {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+    align-items: start;
+  }
+}
+
+@media (max-width: 720px) {
+  .editor {
+    --editor-stage-h: min(60vh, 440px);
+  }
+
+  .editor_workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .editor_bar_secondary {
+    margin-inline-start: 0;
+    inline-size: 100%;
+  }
+
+  /* reel: the rail becomes one horizontally scrolling row above the canvas */
+  .editor_rail {
+    position: static;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    justify-content: start;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    border-radius: var(--radius-md);
+  }
+
+  .editor_rail_group {
+    grid-auto-flow: column;
+    grid-auto-columns: var(--editor-reel-item);
+  }
+
+  .editor_rail_group + .editor_rail_group {
+    padding-block-start: 0;
+    padding-inline-start: var(--space-2);
+    border-block-start: 0;
+    border-inline-start: 1px solid var(--line);
+  }
+
+  .editor_panel {
+    grid-column: auto;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .editor_stage_meta {
+    margin-inline-start: 0;
+    inline-size: 100%;
+  }
+
+  .editor_viewport {
+    border-radius: var(--radius-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editor_tool:hover,
+  .editor_swatch:hover {
+    transform: none;
+  }
+}

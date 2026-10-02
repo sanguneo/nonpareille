@@ -1,0 +1,373 @@
+/*
+ * Generate screen (AI sprite generation form).
+ * Layout follows changeroa/StyleGallery (docs CC BY 4.0):
+ *   recipe   recipes/form-flow.md                     (single primary column, grouped fields, reachable actions)
+ *   patterns patterns/containment/content-limiter.md  -> .gen_limiter
+ *            patterns/stacking/stack.md               -> .gen_stack / .gen_fields / .gen_stages
+ *            patterns/in-line-grouping/cluster.md     -> .gen_actions / .gen_swatches / .gen_prompt_meta
+ *            patterns/stacking/line-up.md             -> .gen_result / .gen_result_body / .gen_result_footer
+ * Visual tokens come from ./tokens.css (Miettes brand). Screen-local sizes are declared once on .gen.
+ */
+
+.gen {
+  --gen-measure: 760px;
+  --gen-gap-field: var(--space-5);
+  --gen-gap-group: var(--space-6);
+  --gen-gap-actions: var(--space-3);
+  --gen-swatch: 18px;
+  --gen-marker: 24px;
+  --gen-icon: 18px;
+  --gen-dim-input: 104px;
+  --gen-ring: 3px;
+}
+
+/* ---------- content-limiter ---------- */
+.gen_limiter {
+  inline-size: 100%;
+  max-inline-size: var(--gen-measure);
+  margin-inline: auto;
+}
+
+/* ---------- stack ---------- */
+.gen_stack {
+  display: grid;
+  gap: var(--gen-gap-group);
+}
+
+.gen_fields {
+  display: grid;
+  gap: var(--gen-gap-field);
+}
+
+/* ---------- Fields ---------- */
+.field .gen_subject {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  padding-block: var(--space-3);
+}
+
+/* Fixed W x H row: the inputs keep app.css's 100% width and fill their own tracks */
+.gen_dims {
+  display: grid;
+  grid-template-columns: var(--gen-dim-input) max-content var(--gen-dim-input);
+  justify-content: start;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.gen_dims_input {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Segmented tracks hug their options instead of stretching across the field */
+.gen_fields .segmented {
+  justify-self: start;
+}
+
+.gen_dims_x {
+  color: var(--muted);
+}
+
+.gen_swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gen_swatch {
+  inline-size: var(--gen-swatch);
+  block-size: var(--gen-swatch);
+  border-radius: calc(var(--gen-swatch) / 4);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+/* ---------- Actions (cluster) ---------- */
+.gen_actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gen-gap-actions);
+  justify-content: flex-end;
+}
+
+/* ---------- Prompt preview (collapsible card) ---------- */
+.gen_prompt {
+  display: block;
+  padding: 0;
+}
+
+.gen_prompt_summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  list-style: none;
+}
+
+.gen_prompt_summary::-webkit-details-marker {
+  display: none;
+}
+
+.gen_prompt_summary:hover .gen_prompt_chevron {
+  color: var(--brown);
+}
+
+.gen_prompt_chevron {
+  flex: none;
+  inline-size: var(--gen-icon);
+  block-size: var(--gen-icon);
+  margin-inline-start: auto;
+  color: var(--muted);
+  transition: transform var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.gen_prompt[open] .gen_prompt_chevron {
+  transform: rotate(180deg);
+}
+
+.gen_prompt_body {
+  display: grid;
+  gap: var(--space-4);
+  padding: 0 var(--space-6) var(--space-6);
+}
+
+.gen_prompt_text {
+  margin: 0;
+  padding: var(--space-4);
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.gen_prompt_meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.gen_key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.gen_key_chip {
+  inline-size: var(--gen-swatch);
+  block-size: var(--gen-swatch);
+  border-radius: calc(var(--gen-swatch) / 4);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+/* ---------- Job progress ---------- */
+.gen_stages {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gen_stage {
+  display: grid;
+  grid-template-columns: var(--gen-marker) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-3);
+  color: var(--muted);
+}
+
+.gen_stage_mark {
+  display: grid;
+  place-items: center;
+  inline-size: var(--gen-marker);
+  block-size: var(--gen-marker);
+  border-radius: var(--radius-pill);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+}
+
+.gen_stage_mark svg {
+  inline-size: calc(var(--gen-marker) / 2);
+  block-size: calc(var(--gen-marker) / 2);
+}
+
+.gen_stage_text {
+  display: grid;
+  gap: var(--space-1);
+  padding-block-start: calc(var(--space-1) / 2);
+}
+
+.gen_stage_hint {
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-regular);
+}
+
+.gen_stage[data-state="done"] {
+  color: var(--ink);
+}
+
+.gen_stage[data-state="done"] .gen_stage_mark {
+  background: var(--brown);
+  color: var(--on-primary);
+  box-shadow: none;
+}
+
+.gen_stage[data-state="active"] {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+.gen_stage[data-state="active"] .gen_stage_mark {
+  background: var(--crust);
+  color: var(--on-primary);
+  box-shadow: 0 0 0 var(--gen-ring) var(--crumb);
+}
+
+.gen_status_line {
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+/* ---------- Result (line-up) ---------- */
+.gen_result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.gen_result_body {
+  min-block-size: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-5);
+}
+
+.gen_result_footer {
+  margin-block-start: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gen-gap-actions);
+}
+
+.gen_report {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.gen_report_item {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--cream);
+  border-radius: var(--radius-md);
+}
+
+.gen_report dt {
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+.gen_report dd {
+  margin: 0;
+  color: var(--brown);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  font-variant-numeric: tabular-nums;
+}
+
+.gen_warn {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--warn-soft);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  font-size: var(--text-sm);
+}
+
+.gen_warn svg {
+  flex: none;
+  inline-size: var(--gen-icon);
+  block-size: var(--gen-icon);
+  color: var(--crust);
+}
+
+/* ---------- Error card (calm) ---------- */
+.gen_error .card_title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--danger);
+}
+
+.gen_error .card_title svg {
+  flex: none;
+  inline-size: var(--gen-icon);
+  block-size: var(--gen-icon);
+}
+
+.gen_error_message {
+  padding: var(--space-3) var(--space-4);
+  background: var(--danger-soft);
+  border-radius: var(--radius-md);
+  color: var(--danger);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+
+/* Cards that receive programmatic focus when the job state changes */
+.gen_live:focus-visible {
+  border-radius: var(--radius-lg);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .gen_result_body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gen_actions .btn,
+  .gen_result_footer .btn {
+    flex: 1 1 calc(50% - var(--gen-gap-actions));
+  }
+
+  .gen_prompt_summary {
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-md);
+  }
+
+  .gen_prompt_body {
+    padding: 0 var(--space-5) var(--space-5);
+  }
+
+  .gen_live:focus-visible {
+    border-radius: var(--radius-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gen_prompt_chevron {
+    transition: none;
+  }
+}

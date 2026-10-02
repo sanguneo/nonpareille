@@ -1,0 +1,300 @@
+/*
+ * Convert screen (image -> dots) styles.
+ * Layout follows changeroa/StyleGallery (docs CC BY 4.0):
+ *   recipe   recipes/form-flow.md  (single primary column of grouped fields, actions kept reachable)
+ *   patterns patterns/containment/content-limiter.md -> .convert_form (readable form-body width, left-aligned)
+ *            patterns/stacking/stack.md               -> .convert_stack / .convert_fields (group gap vs field gap)
+ *            patterns/in-line-grouping/cluster.md     -> .convert_actions / .convert_swatches (shell .cluster for pills)
+ *            patterns/stacking/line-up.md             -> .convert_result / _body / _footer (actions aligned at the bottom)
+ * Visual tokens come from ./tokens.css (Miettes brand). No raw colors below; sizes use the spacing scale.
+ */
+
+/* ---------- Drop zone ---------- */
+.convert_dropzone {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-5);
+  background: var(--bg);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-lg);
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+
+.convert_dropzone_active {
+  background: var(--crumb);
+  border-color: var(--crust);
+}
+
+.convert_dropzone_icon {
+  inline-size: var(--space-10);
+  block-size: var(--space-10);
+  color: var(--crust);
+}
+
+.convert_dropzone_title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.convert_dropzone_hint {
+  max-inline-size: 48ch;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+/* Compact state once an image is loaded: the same zone keeps accepting drops. */
+.convert_dropzone_compact {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  text-align: start;
+}
+
+.convert_source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.convert_source_thumb {
+  flex: none;
+  inline-size: var(--space-16);
+  block-size: var(--space-16);
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 1px var(--line);
+  background-color: var(--checker-a);
+  background-image: conic-gradient(var(--checker-b) 25%, var(--checker-a) 0 50%, var(--checker-b) 0 75%, var(--checker-a) 0);
+  background-size: var(--space-4) var(--space-4);
+}
+
+.convert_source_text {
+  display: grid;
+  gap: var(--space-1);
+  flex: 1 1 200px;
+  min-inline-size: 0;
+}
+
+.convert_source_name {
+  overflow: hidden;
+  font-weight: var(--weight-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.convert_source_meta {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.convert_source_actions {
+  margin-inline-start: auto;
+}
+
+/* ---------- Workbench: form column + preview column ---------- */
+.convert_workbench {
+  display: grid;
+  gap: var(--space-8);
+  min-inline-size: 0;
+}
+
+/* content-limiter: the form body keeps a readable measure even in a wide card. */
+.convert_form {
+  max-inline-size: 36rem;
+  min-inline-size: 0;
+}
+
+/* stack: group rhythm (.convert_stack) is separate from field rhythm (.convert_fields). */
+.convert_stack {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.convert_fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--space-4);
+}
+
+.convert_group_title {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--muted);
+}
+
+.convert_checks {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.convert_range,
+.convert_palette {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.convert_range input[type="range"] {
+  inline-size: 100%;
+  margin: 0;
+}
+
+/* Fixed-width slot for the number inputs beside a slider / select. */
+.convert_number_slot {
+  inline-size: 5.5rem;
+}
+
+.convert_size {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--muted);
+}
+
+/* ---------- Preview (line-up: body grows, footer actions align at the bottom) ---------- */
+.convert_result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-inline-size: 0;
+}
+
+.convert_result_body {
+  display: grid;
+  gap: var(--space-4);
+  min-block-size: 0;
+}
+
+.convert_result_footer {
+  margin-block-start: auto;
+}
+
+.convert_compare {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.convert_pane {
+  display: grid;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.convert_pane_head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.convert_pane_label {
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.convert_pane_frame {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: var(--space-3);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  min-inline-size: 0;
+}
+
+.convert_pane_frame_busy {
+  opacity: 0.6;
+}
+
+.convert_pane_img {
+  max-inline-size: 100%;
+  max-block-size: 100%;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px var(--line);
+  background-color: var(--checker-a);
+  background-image: conic-gradient(var(--checker-b) 25%, var(--checker-a) 0 50%, var(--checker-b) 0 75%, var(--checker-a) 0);
+  background-size: var(--space-4) var(--space-4);
+}
+
+.convert_placeholder {
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-align: center;
+}
+
+.convert_status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--space-6);
+}
+
+.convert_note {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.convert_error {
+  font-size: var(--text-sm);
+  color: var(--danger);
+}
+
+.convert_swatches {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.convert_swatch {
+  inline-size: var(--space-4);
+  block-size: var(--space-4);
+  border-radius: var(--space-1);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+/* cluster: actions wrap before they overflow; the primary action stays first. */
+.convert_actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: flex-start;
+}
+
+/* ---------- Responsive ---------- */
+@media (min-width: 1024px) {
+  .convert_workbench {
+    grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 720px) {
+  .convert_dropzone {
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .convert_compare {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .convert_actions > .btn {
+    flex: 1 1 12rem;
+  }
+}

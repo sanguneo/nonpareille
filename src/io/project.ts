@@ -29,11 +29,14 @@ function encodeData(data: Uint16Array): string {
   const bytes = new Uint8Array(data.length * 2);
   const view = new DataView(bytes.buffer);
   for (let i = 0; i < data.length; i++) view.setUint16(i * 2, data[i]!, true);
-  return Buffer.from(bytes).toString("base64");
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return btoa(binary);
 }
 
 function decodeData(encoded: string, size: number): Uint16Array {
-  const bytes = Buffer.from(encoded, "base64");
+  const binary = atob(encoded);
+  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
   if (bytes.length !== size * 2) throw new Error("Layer data has invalid length");
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   return Uint16Array.from({ length: size }, (_, i) => view.getUint16(i * 2, true));

@@ -1,0 +1,103 @@
+/*
+ * Nonpareille design tokens.
+ * Visual expression follows the Miettes brand (sanguneo/miettes DESIGN.md):
+ * cream page, paper cards, ink text, brown primaries, crust accent.
+ * Every color, spacing, radius, shadow and type size in ui/ references one of these.
+ */
+:root {
+  color-scheme: light;
+
+  /* Brand palette */
+  --cream: #fbf5ea;
+  --paper: #fffdf8;
+  --ink: #3b2414;
+  --brown: #7a3e1b;
+  --brown-2: #5f2f13;
+  --crust: #c8742a;
+  --crumb: #f3dfc2;
+  --muted: #7c6553;
+  --line: rgba(59, 36, 20, 0.1);
+  --line-strong: rgba(59, 36, 20, 0.22);
+
+  /* Semantic (AA on --paper/--cream for text use) */
+  --ok: #3f6f3a;
+  --ok-soft: #e4eedc;
+  --danger: #a63a2b;
+  --danger-soft: #f6e0da;
+  --warn: var(--crust);
+  --warn-soft: var(--crumb);
+
+  /* Surfaces */
+  --bg: var(--cream);
+  --surface: var(--paper);
+  --surface-soft: var(--crumb);
+  --on-primary: #fffdf8;
+
+  /* Checkerboard for transparent dots */
+  --checker-a: var(--cream);
+  --checker-b: var(--crumb);
+
+  /* Typography */
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui,
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, "D2Coding", monospace;
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.8125rem;  /* 13px */
+  --text-base: 0.9375rem;/* 15px */
+  --text-lg: 1.0625rem;  /* 17px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.625rem;  /* 26px */
+  --text-3xl: 2.125rem;  /* 34px */
+  --leading-tight: 1.2;
+  --leading-normal: 1.55;
+  --weight-regular: 450;
+  --weight-medium: 550;
+  --weight-bold: 700;
+  --tracking-tight: -0.01em;
+
+  /* Spacing (4px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Radii */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* Elevation */
+  --shadow-card: 0 1px 2px rgba(59, 36, 20, 0.06), 0 12px 32px -12px rgba(59, 36, 20, 0.18);
+  --shadow-lift: 0 2px 4px rgba(59, 36, 20, 0.08), 0 16px 36px -12px rgba(59, 36, 20, 0.22);
+  --shadow-toast: 0 8px 24px -8px rgba(59, 36, 20, 0.28);
+
+  /* Focus */
+  --focus-ring: 0 0 0 3px var(--crust);
+  --focus-offset: 2px;
+
+  /* Layout */
+  --page-max: 1280px;
+  --header-h: 64px;
+  --tabbar-h: 60px;
+  --control-h: 40px;
+  --control-h-sm: 32px;
+
+  /* Motion (interaction feedback only) */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur-base: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-base: 0ms;
+  }
+}

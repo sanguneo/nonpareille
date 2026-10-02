@@ -13,3 +13,5 @@ Third-party runtime dependencies:
 - zod@4.6.5 (MIT)
 - @modelcontextprotocol/sdk@1.31.0 (MIT)
 - opentype.js@2.0.0 (MIT)
+
+UI layout follows changeroa/StyleGallery recipes and layout patterns (docs CC BY 4.0, https://github.com/changeroa/StyleGallery).
