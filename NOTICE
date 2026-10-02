@@ -1,0 +1,15 @@
+dother
+Copyright (c) 2026 sanguneo. Licensed under MIT (see LICENSE).
+
+This project ports ideas and published algorithms from the following works.
+No GPL/LGPL source code is copied; only ideas and format constants are used.
+
+- PixelOE (KohakuBlueleaf/PixelOE), Apache-2.0: contrast-aware outline expansion and contrast downsampling (src/convert/outline-expand.ts, src/convert/resample.ts "contrast").
+- pixel-sprite-generator (zfedoran/pixel-sprite-generator), MIT: Dave Bollinger sprite algorithm and mask presets (src/gen/bollinger.ts, src/gen/masks.ts).
+- OKLab color space, Bjorn Ottosson (public domain matrices).
+
+Third-party runtime dependencies:
+- fast-png@8.0.0 (MIT)
+- zod@4.6.5 (MIT)
+- @modelcontextprotocol/sdk@1.31.0 (MIT)
+- opentype.js@2.0.0 (MIT)
