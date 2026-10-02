@@ -49,17 +49,24 @@ function snapToPalette(grid: DotGrid, colors: RGBA32[]): { grid: DotGrid; residu
 export async function generate(
   spec: GenSpec,
   provider: ImageProvider,
-  opts: { retries?: number; paletteColors?: RGBA32[] } = {},
+  opts: {
+    retries?: number;
+    paletteColors?: RGBA32[];
+    onProgress?: (stage: string, detail?: Record<string, unknown>) => void;
+  } = {},
 ): Promise<{ grid: DotGrid; report: GenReport }> {
   const retries = opts.retries ?? 0;
+  const progress = opts.onProgress ?? (() => {});
   const requested = (opts.paletteColors ?? []).filter((c) => (c & 255) !== 0);
   const built = buildImagePrompt(spec, requested);
+  progress("prompt", { size: built.size, block: built.block });
   let best: { grid: DotGrid; report: GenReport } | undefined;
   let made = 0;
 
   for (let attempt = 1; attempt <= retries + 1; attempt++) {
     const baseSeed = spec.seed ?? 0;
     made = attempt;
+    progress("generating", { attempt });
     const result = await provider.generate({
       prompt: built.prompt,
       ...(built.negative ? { negative: built.negative } : {}),
@@ -67,6 +74,7 @@ export async function generate(
       ...(spec.styleRef ? { refs: spec.styleRef } : {}),
       ...(spec.seed !== undefined || attempt > 1 ? { seed: baseSeed + attempt - 1 } : {}),
     });
+    progress("decoding", { attempt });
     const img = decodePNG(result.png);
     const W = spec.width, H = spec.height;
     const full = { x0: 0, y0: 0, w: img.width, h: img.height };
@@ -74,6 +82,7 @@ export async function generate(
 
     let grid: DotGrid, purity: number, confidence: number, period: number, phase: [number, number];
     if (spec.model === "retro-diffusion") {
+      progress("snapping", { attempt });
       const sampled = resample(keyed, full, W, H, "mode", { trim: 0.15 });
       grid = cellsToGrid(sampled.colors, W, H);
       purity = sampled.purity;
@@ -82,10 +91,12 @@ export async function generate(
       phase = [0, 0];
     } else {
       const prior = built.priorPeriod * (img.width / built.size[0]);
+      progress("detecting", { attempt });
       const est = detectGrid(img, { periodX: prior, periodY: prior });
       confidence = est.confidence;
       period = est.px;
       phase = [est.phiX, est.phiY];
+      progress("snapping", { attempt, confidence });
       if (est.confidence >= MIN_CONFIDENCE) {
         const snapped = snap(keyed, est, { sample: "mode", trim: 0.15 });
         grid = snapped.grid;
@@ -100,6 +111,7 @@ export async function generate(
 
     let paletteResidual = 0;
     if (requested.length > 0) {
+      progress("palette", { attempt });
       const mapped = snapToPalette(grid, requested);
       grid = mapped.grid;
       paletteResidual = mapped.residual;
@@ -115,5 +127,6 @@ export async function generate(
     if (!report.recommendRegenerate) break;
   }
   const final = best!;
+  progress("done", { attempts: made });
   return { grid: final.grid, report: { ...final.report, attempts: made } };
 }
