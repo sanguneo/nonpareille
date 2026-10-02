@@ -29,7 +29,7 @@ test("mode sampling with fixed pico8 reproduces every cell", () => {
     for (let i = 0; i < N; i++) expect(grid.palette.colors[grid.data[j * N + i]!]).toBe(expected(i, j));
 });
 
-test("dot convert CLI returns 0", async () => {
+test("nonpareille convert CLI returns 0", async () => {
   const dir = mkdtempSync(join(tmpdir(), "dot-convert-"));
   const input = join(dir, "in.png");
   writeFileSync(input, encodeRGBAPNG(synthetic()));

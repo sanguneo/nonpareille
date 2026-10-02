@@ -9,8 +9,8 @@ import { EASYRPG_PRESETS, encodeEasyRpg } from "../../src/presets/easyrpg.ts";
 import type { CommandModule } from "./types.ts";
 
 export const summary = "pack frames into sprite sheet or slice sheet into frames";
-export const usage = `usage: dot sheet pack <frames...> --cols C [--preset P] -o out.png
-       dot sheet slice <sheet.png> --frame WxH -o outdir`;
+export const usage = `usage: nonpareille sheet pack <frames...> --cols C [--preset P] -o out.png
+       nonpareille sheet slice <sheet.png> --frame WxH -o outdir`;
 
 async function runPack(argv: string[]): Promise<number> {
   const args = parseArgs(argv);

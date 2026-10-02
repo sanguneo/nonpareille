@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { decode } from "fast-png";
 import { main } from "../cli/main.ts";
 
-test("dot render scales heart.dot.txt to 128x128 png", async () => {
+test("nonpareille render scales heart.dot.txt to 128x128 png", async () => {
   const dir = mkdtempSync(join(tmpdir(), "dot-cli-"));
   const out = join(dir, "sub", "heart.png");
   expect(await main(["render", "test/fixtures/heart.dot.txt", "--scale", "8", "-o", out])).toBe(0);
@@ -14,7 +14,7 @@ test("dot render scales heart.dot.txt to 128x128 png", async () => {
   expect(png.height).toBe(128);
 });
 
-test("dot new writes an empty document that renders", async () => {
+test("nonpareille new writes an empty document that renders", async () => {
   const dir = mkdtempSync(join(tmpdir(), "dot-cli-"));
   const doc = join(dir, "a.dot.json");
   expect(await main(["new", "--size", "4x3", "--palette", "#ff0000", "-o", doc])).toBe(0);

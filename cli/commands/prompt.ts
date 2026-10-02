@@ -5,7 +5,7 @@ import { loadPaletteSpec } from "../../src/io/palette-files.ts";
 import type { CommandModule } from "./types.ts";
 
 export const summary = "build an image-model prompt and numeric parameters";
-export const usage = "usage: dot prompt --subject <text> --size 32x32 --palette db32 [--view side] [--model codex-image] [--outline none|black|selout] [--shading flat|cel|soft] [--light top-left|top|top-right]";
+export const usage = "usage: nonpareille prompt --subject <text> --size 32x32 --palette db32 [--view side] [--model codex-image] [--outline none|black|selout] [--shading flat|cel|soft] [--light top-left|top|top-right]";
 
 const VIEWS = ["front", "side", "three-quarter", "top-down", "isometric"] as const;
 const MODELS = ["codex-image", "openai", "sdxl-pixel-art-xl", "retro-diffusion"] as const;

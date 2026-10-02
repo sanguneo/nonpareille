@@ -11,7 +11,7 @@ import { parseHexColor } from "./new.ts";
 import type { CommandModule } from "./types.ts";
 
 export const summary = "snap an AI-generated image to a dot grid";
-export const usage = "usage: dot snap <image> [--expect 64x64] [--palette #hex,...] [--scale 1] [--json] -o sprite.png";
+export const usage = "usage: nonpareille snap <image> [--expect 64x64] [--palette #hex,...] [--scale 1] [--json] -o sprite.png";
 
 export async function run(argv: string[]): Promise<number> {
   const args = parseArgs(argv);

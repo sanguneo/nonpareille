@@ -8,7 +8,7 @@ import { InputError } from "../../src/core/types.ts";
 import type { CommandModule } from "./types.ts";
 
 export const summary = "build a tile mosaic from a target image";
-export const usage = "usage: dot mosaic target.png --tiles chipset.png --tile 16 [--k 2] [--reuse-radius 2] -o out.png";
+export const usage = "usage: nonpareille mosaic target.png --tiles chipset.png --tile 16 [--k 2] [--reuse-radius 2] -o out.png";
 export async function run(argv: string[]): Promise<number> {
   const args = parseArgs(argv), targetPath = args.positional[0], tilesPath = flagStr(args, "tiles");
   const size = flagNum(args, "tile"), out = flagStr(args, "out");

@@ -11,7 +11,7 @@ import { encodeRGBAPNG } from "../../src/io/png-encode.ts";
 import type { CommandModule } from "./types.ts";
 
 export const summary = "generate procedural Bollinger sprites";
-export const usage = "usage: dot procgen --mask spaceship --seed 42 [--count 1] [--palette pico8] [--scale 4] [--sheet] [--cols 8] -o ships.png";
+export const usage = "usage: nonpareille procgen --mask spaceship --seed 42 [--count 1] [--palette pico8] [--scale 4] [--sheet] [--cols 8] -o ships.png";
 
 export async function run(argv: string[]): Promise<number> {
   const args = parseArgs(argv);

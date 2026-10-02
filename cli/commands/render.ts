@@ -15,7 +15,7 @@ import { parseHexColor } from "./new.ts";
 import type { CommandModule } from "./types.ts";
 
 export const summary = "render a .dot.json / .dot.txt document to image or text";
-export const usage = `usage: dot render <in.dot.json|in.dot.txt> [--scale 8] [--gap 1 --gap-color #000000] [--margin 0] [--background #00000000] [--format png|png8|svg|ansi|braille|ascii|shape-ascii] [-o out]`;
+export const usage = `usage: nonpareille render <in.dot.json|in.dot.txt> [--scale 8] [--gap 1 --gap-color #000000] [--margin 0] [--background #00000000] [--format png|png8|svg|ansi|braille|ascii|shape-ascii] [-o out]`;
 
 /** Format switch: add a new --format by adding one case to `encode`. */
 function encode(format: string, grid: DotGrid, canvas: CanvasSpec): Uint8Array | string {

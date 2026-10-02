@@ -40,12 +40,12 @@ export function createCodexImageProvider(opts: CodexImageOptions = {}): ImagePro
     async generate(req: ImageGenRequest): Promise<ImageGenResult> {
       const skillDir =
         opts.skillDir ??
-        process.env.DOT_CODEX_IMAGE_SKILL_DIR ??
+        process.env.NONPAREILLE_CODEX_IMAGE_SKILL_DIR ??
         join(homedir(), ".agents/skills/codex-image");
       const script = join(skillDir, "scripts", "gen.mjs");
       if (!existsSync(script)) {
         throw new ProviderError(
-          `codex-image: ${script} not found; set DOT_CODEX_IMAGE_SKILL_DIR to the codex-image skill directory`,
+          `codex-image: ${script} not found; set NONPAREILLE_CODEX_IMAGE_SKILL_DIR to the codex-image skill directory`,
         );
       }
       const dir = await mkdtemp(join(tmpdir(), "dot-codex-"));

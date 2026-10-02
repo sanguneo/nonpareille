@@ -1,19 +1,19 @@
 {
-  "name": "dother",
+  "name": "nonpareille",
   "version": "0.1.0",
   "description": "Dot (pixel-art) image engine",
   "license": "MIT",
   "type": "module",
   "private": true,
   "bin": {
-    "dot": "cli/main.ts"
+    "nonpareille": "cli/main.ts"
   },
   "scripts": {
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
-    "dot": "bun cli/main.ts",
-    "build": "bun build --compile cli/main.ts --outfile dot.exe"
+    "build": "bun build --compile cli/main.ts --outfile nonpareille.exe",
+    "nonpareille": "bun cli/main.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.31.0",

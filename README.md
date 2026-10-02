@@ -1,13 +1,15 @@
-# dother
+# Nonpareille (논파레유)
 
-dother는 도트(픽셀) 그림을 만드는 엔진입니다. 모든 결과물은 팔레트 인덱스로 이루어진 격자(`DotGrid`)로 표현되고, 같은 입력과 같은 시드를 주면 언제나 같은 결과가 나옵니다. CLI(`dot`), MCP 서버, TypeScript 라이브러리 세 가지 방식으로 쓸 수 있습니다.
+**흩어진 점을, 하나의 그림으로.**
+
+Nonpareille(논파레유)는 디저트 위에 뿌리는 작은 색 설탕 알갱이입니다. 이 프로젝트는 도트(픽셀) 그림을 만드는 엔진입니다. 모든 결과물은 팔레트 인덱스로 이루어진 격자(`DotGrid`)로 표현되고, 같은 입력과 같은 시드를 주면 언제나 같은 결과가 나옵니다. CLI(`nonpareille`), MCP 서버, TypeScript 라이브러리 세 가지 방식으로 쓸 수 있습니다.
 
 ## 네 가지 입력 경로
 
-1. **AI 생성**: `dot gen`이 이미지 모델(기본값 `codex-image`)에 프롬프트를 보내고, 받은 이미지를 격자에 맞춰 스냅한 뒤 팔레트로 정리합니다. `dot prompt`로 프롬프트만 미리 볼 수도 있습니다.
-2. **직접 그리기 / MCP**: `dot new`로 빈 문서를 만들고 `.dot.json`이나 `.dot.txt`를 직접 편집합니다. Claude Code 같은 에이전트는 `dot mcp`로 도구를 호출해 한 점씩 그릴 수 있습니다.
-3. **이미지 변환**: `dot convert`는 일반 사진이나 그림을 도트로 줄입니다. `dot snap`은 AI가 그린 "가짜 픽셀아트"처럼 어긋난 격자를 찾아 깔끔한 원본 해상도로 되돌립니다.
-4. **절차적 생성**: `dot procgen`이 마스크와 시드로 우주선 같은 스프라이트를 무한히 찍어냅니다.
+1. **AI 생성**: `nonpareille gen`이 이미지 모델(기본값 `codex-image`)에 프롬프트를 보내고, 받은 이미지를 격자에 맞춰 스냅한 뒤 팔레트로 정리합니다. `nonpareille prompt`로 프롬프트만 미리 볼 수도 있습니다.
+2. **직접 그리기 / MCP**: `nonpareille new`로 빈 문서를 만들고 `.dot.json`이나 `.dot.txt`를 직접 편집합니다. Claude Code 같은 에이전트는 `nonpareille mcp`로 도구를 호출해 한 점씩 그릴 수 있습니다.
+3. **이미지 변환**: `nonpareille convert`는 일반 사진이나 그림을 도트로 줄입니다. `nonpareille snap`은 AI가 그린 "가짜 픽셀아트"처럼 어긋난 격자를 찾아 깔끔한 원본 해상도로 되돌립니다.
+4. **절차적 생성**: `nonpareille procgen`이 마스크와 시드로 우주선 같은 스프라이트를 무한히 찍어냅니다.
 
 ## 설치
 
@@ -15,7 +17,7 @@ dother는 도트(픽셀) 그림을 만드는 엔진입니다. 모든 결과물�
 bun install
 ```
 
-Bun 1.4 이상이 필요합니다. 명령은 `bun cli/main.ts <명령>`으로 실행합니다. 아래에서는 짧게 `dot`이라고 씁니다.
+Bun 1.4 이상이 필요합니다. 명령은 `bun cli/main.ts <명령>`으로 실행합니다. 아래에서는 짧게 `nonpareille`라고 씁니다.
 
 ## 빠르게 시작하기
 
@@ -42,33 +44,33 @@ bun cli/main.ts render hero.dot.json --format ansi
 
 | 명령 | 사용법 |
 |---|---|
-| `bom` | `dot bom in.dot.json\|in.dot.txt [--material perler] [--json]` |
-| `convert` | `dot convert <in.png\|jpg\|webp> --dots 64 [--height auto\|N] [--fit cover\|contain\|stretch] [--sample kcentroid\|mode\|mean\|median\|dominant\|center\|contrast] [--palette pico8\|auto:16\|lospec:<slug>\|file.hex] [--dither none\|bayer2\|bayer4\|bayer8\|fs\|jjn\|stucki\|atkinson\|sierra\|yliluoma] [--outline-expand] [--orphans] [--outline black\|selout] [--scale 8] [--gap 0] [--json] -o out.(png\|svg\|dot.json\|dot.txt)` |
-| `detect-grid` | `dot detect-grid <image> [--expect 64x64] --json` |
-| `gen` | `dot gen --subject <text> --size 32x32 --palette pico8 --provider codex-image [--ref a.png,b.png] [--retries 0] [--seed N] [--view side] [--outline none\|black\|selout] [--scale 8] [--json] -o out.dot.json\|out.png` |
-| `mcp` | `dot mcp` (stdin이 닫힐 때까지 stdin/stdout으로 MCP 통신) |
-| `mosaic` | `dot mosaic target.png --tiles chipset.png --tile 16 [--k 2] [--reuse-radius 2] -o out.png` |
-| `new` | `dot new --size 32x32 [--palette #rrggbb,#rrggbb,...] -o hero.dot.json\|hero.dot.txt` |
-| `palette` | `dot palette extract <in.png> -k 16 [-o f.hex]`<br>`dot palette fetch <lospec-slug> [-o f.hex]`<br>`dot palette convert <a.gpl> <b.hex>`<br>`dot palette ramp --base #b13e53 -n 5 [-o f.hex]` |
-| `procgen` | `dot procgen --mask spaceship --seed 42 [--count 1] [--palette pico8] [--scale 4] [--sheet] [--cols 8] -o ships.png` |
-| `prompt` | `dot prompt --subject <text> --size 32x32 --palette db32 [--view side] [--model codex-image] [--outline none\|black\|selout] [--shading flat\|cel\|soft] [--light top-left\|top\|top-right]` |
-| `render` | `dot render <in.dot.json\|in.dot.txt> [--scale 8] [--gap 1 --gap-color #000000] [--margin 0] [--background #00000000] [--format png\|png8\|svg\|ansi\|braille\|ascii\|shape-ascii] [-o out]` |
-| `sheet` | `dot sheet pack <frames...> --cols C [--preset P] -o out.png`<br>`dot sheet slice <sheet.png> --frame WxH -o outdir` |
-| `snap` | `dot snap <image> [--expect 64x64] [--palette #hex,...] [--scale 1] [--json] -o sprite.png` |
+| `bom` | `nonpareille bom in.dot.json\|in.dot.txt [--material perler] [--json]` |
+| `convert` | `nonpareille convert <in.png\|jpg\|webp> --dots 64 [--height auto\|N] [--fit cover\|contain\|stretch] [--sample kcentroid\|mode\|mean\|median\|dominant\|center\|contrast] [--palette pico8\|auto:16\|lospec:<slug>\|file.hex] [--dither none\|bayer2\|bayer4\|bayer8\|fs\|jjn\|stucki\|atkinson\|sierra\|yliluoma] [--outline-expand] [--orphans] [--outline black\|selout] [--scale 8] [--gap 0] [--json] -o out.(png\|svg\|dot.json\|dot.txt)` |
+| `detect-grid` | `nonpareille detect-grid <image> [--expect 64x64] --json` |
+| `gen` | `nonpareille gen --subject <text> --size 32x32 --palette pico8 --provider codex-image [--ref a.png,b.png] [--retries 0] [--seed N] [--view side] [--outline none\|black\|selout] [--scale 8] [--json] -o out.dot.json\|out.png` |
+| `mcp` | `nonpareille mcp` (stdin이 닫힐 때까지 stdin/stdout으로 MCP 통신) |
+| `mosaic` | `nonpareille mosaic target.png --tiles chipset.png --tile 16 [--k 2] [--reuse-radius 2] -o out.png` |
+| `new` | `nonpareille new --size 32x32 [--palette #rrggbb,#rrggbb,...] -o hero.dot.json\|hero.dot.txt` |
+| `palette` | `nonpareille palette extract <in.png> -k 16 [-o f.hex]`<br>`nonpareille palette fetch <lospec-slug> [-o f.hex]`<br>`nonpareille palette convert <a.gpl> <b.hex>`<br>`nonpareille palette ramp --base #b13e53 -n 5 [-o f.hex]` |
+| `procgen` | `nonpareille procgen --mask spaceship --seed 42 [--count 1] [--palette pico8] [--scale 4] [--sheet] [--cols 8] -o ships.png` |
+| `prompt` | `nonpareille prompt --subject <text> --size 32x32 --palette db32 [--view side] [--model codex-image] [--outline none\|black\|selout] [--shading flat\|cel\|soft] [--light top-left\|top\|top-right]` |
+| `render` | `nonpareille render <in.dot.json\|in.dot.txt> [--scale 8] [--gap 1 --gap-color #000000] [--margin 0] [--background #00000000] [--format png\|png8\|svg\|ansi\|braille\|ascii\|shape-ascii] [-o out]` |
+| `sheet` | `nonpareille sheet pack <frames...> --cols C [--preset P] -o out.png`<br>`nonpareille sheet slice <sheet.png> --frame WxH -o outdir` |
+| `snap` | `nonpareille snap <image> [--expect 64x64] [--palette #hex,...] [--scale 1] [--json] -o sprite.png` |
 
 ## MCP 설정 (Claude Code)
 
-`dot mcp`는 stdio로 동작하는 MCP 서버입니다. Claude Code에는 이렇게 등록합니다.
+`nonpareille mcp`는 stdio로 동작하는 MCP 서버입니다. Claude Code에는 이렇게 등록합니다.
 
 ```sh
-claude mcp add dother -- bun <repo>/cli/main.ts mcp
+claude mcp add nonpareille -- bun <repo>/cli/main.ts mcp
 ```
 
 `<repo>`는 이 저장소의 절대 경로로 바꾸세요.
 
 ## codex-image 프로바이더
 
-`dot gen`의 기본 프로바이더인 `codex-image`는 로컬 codex-image 스킬을 호출합니다. 스킬 위치는 `DOT_CODEX_IMAGE_SKILL_DIR` 환경 변수로 지정하고, 비어 있으면 `~/.agents/skills/codex-image`를 씁니다. 스킬은 ChatGPT 구독 로그인 정보(`~/.omo/auth.json`의 ChatGPT 로그인 또는 `~/.codex/auth.json`)를 쓰므로, 로그인이 없으면 `dot gen`은 원인 메시지와 함께 종료 코드 3으로 끝납니다. 그 밖에 `openai`, `retro-diffusion`, `comfyui` 프로바이더도 고를 수 있습니다.
+`nonpareille gen`의 기본 프로바이더인 `codex-image`는 로컬 codex-image 스킬을 호출합니다. 스킬 위치는 `NONPAREILLE_CODEX_IMAGE_SKILL_DIR` 환경 변수로 지정하고, 비어 있으면 `~/.agents/skills/codex-image`를 씁니다. 스킬은 ChatGPT 구독 로그인 정보(omo `/login`이 쓰는 `~/.omo/agent/auth.json`, `~/.omo/auth.json`, 또는 `~/.codex/auth.json`)를 쓰므로, 로그인이 없으면 `nonpareille gen`은 원인 메시지와 함께 종료 코드 3으로 끝납니다. 그 밖에 `openai`, `retro-diffusion`, `comfyui` 프로바이더도 고를 수 있습니다.
 
 ## 라이브러리로 쓰기
 

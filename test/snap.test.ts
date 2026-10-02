@@ -25,7 +25,7 @@ test("snap command writes a PNG and returns zero with JSON reporting", async () 
   const { img } = makeSynthetic({
     W: 8, H: 8, scale: 4, phaseX: 0, phaseY: 0, noise: 0, blur: false, seed: 9,
   });
-  const dir = mkdtempSync(join(tmpdir(), "dother-snap-"));
+  const dir = mkdtempSync(join(tmpdir(), "nonpareille-snap-"));
   const input = join(dir, "in.png"), output = join(dir, "out.png");
   try {
     const encoded = encodeRGBAPNG(img);

@@ -1,4 +1,4 @@
-// Runs representative dother CLI commands into out/examples/. Exits non-zero on any failure.
+// Runs representative nonpareille CLI commands into out/examples/. Exits non-zero on any failure.
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { encode } from "fast-png";

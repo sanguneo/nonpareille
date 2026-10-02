@@ -16,7 +16,7 @@ import { toSVG } from "../../src/io/svg.ts";
 import type { CommandModule } from "./types.ts";
 
 export const summary = "convert a photo/illustration into dot art";
-export const usage = `usage: dot convert <in.png|jpg|webp> --dots 64 [--height auto|N] [--fit cover|contain|stretch] [--sample kcentroid|mode|mean|median|dominant|center|contrast] [--palette pico8|auto:16|lospec:<slug>|file.hex] [--dither none|bayer2|bayer4|bayer8|fs|jjn|stucki|atkinson|sierra|yliluoma] [--outline-expand] [--orphans] [--outline black|selout] [--scale 8] [--gap 0] [--json] -o out.(png|svg|dot.json|dot.txt)`;
+export const usage = `usage: nonpareille convert <in.png|jpg|webp> --dots 64 [--height auto|N] [--fit cover|contain|stretch] [--sample kcentroid|mode|mean|median|dominant|center|contrast] [--palette pico8|auto:16|lospec:<slug>|file.hex] [--dither none|bayer2|bayer4|bayer8|fs|jjn|stucki|atkinson|sierra|yliluoma] [--outline-expand] [--orphans] [--outline black|selout] [--scale 8] [--gap 0] [--json] -o out.(png|svg|dot.json|dot.txt)`;
 
 const SAMPLES = ["center", "mean", "median", "mode", "dominant", "kcentroid", "contrast"];
 const DITHERS = ["none", "bayer2", "bayer4", "bayer8", "fs", "jjn", "stucki", "atkinson", "sierra", "yliluoma"];

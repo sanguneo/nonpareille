@@ -1,6 +1,6 @@
-# dother — 도트(픽셀아트) 이미지 엔진 구현 계획
+# nonpareille — 도트(픽셀아트) 이미지 엔진 구현 계획
 
-작성일: 2026-10-02 · 상태: 구현 착수 가능 (decision-complete) · 대상 경로: `C:\Users\sknah\workspace\dother`
+작성일: 2026-10-02 · 상태: 구현 착수 가능 (decision-complete) · 대상 경로: `C:\Users\sknah\workspace\nonpareille`
 
 ---
 
@@ -134,7 +134,7 @@
 
 ### 3.1 디렉터리 구조
 ```
-dother/
+nonpareille/
   package.json  tsconfig.json  bunfig.toml  biome.json  LICENSE(MIT)  NOTICE(PixelOE 등)
   src/
     core/
@@ -835,8 +835,8 @@ tile-mosaic, bom, bollinger, masks, easyrpg 프리셋/검증기, sheet pack/slic
 - **실사용 QA**: 생성한 CharSet PNG를 EasyRPG Player(또는 RPG Maker 2003)의 CharSet 폴더에 넣어 맵에서 4방향 걷기를 확인하고 스크린샷을 남깁니다.
 
 ### M7 — 문서와 패키징 (1일)
-README(한국어), 예제 갤러리, `bun build --compile cli/main.ts --outfile dot.exe`.
-- **수용**: 새 셸에서 `dot.exe --help` 실행, 예제 스크립트 전부 재현.
+README(한국어), 예제 갤러리, `bun build --compile cli/main.ts --outfile nonpareille.exe`.
+- **수용**: 새 셸에서 `nonpareille.exe --help` 실행, 예제 스크립트 전부 재현.
 
 ### M8 (선택) — 웹 에디터 · 고급
 Vite + Canvas2D 에디터(코어 재사용), `.ase` 내보내기, MMPX, Gerstner PIA, GIF 애니메이션, 블루노이즈 디더.

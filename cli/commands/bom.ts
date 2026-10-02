@@ -7,7 +7,7 @@ import { documentToGrid, parseDocument } from "../../src/io/project.ts";
 import type { CommandModule } from "./types.ts";
 
 export const summary = "count materials required by a dot grid";
-export const usage = "usage: dot bom in.dot.json|in.dot.txt [--material perler] [--json]";
+export const usage = "usage: nonpareille bom in.dot.json|in.dot.txt [--material perler] [--json]";
 export async function run(argv: string[]): Promise<number> {
   const args = parseArgs(argv), input = args.positional[0];
   if (!input) throw new InputError("input document is required");

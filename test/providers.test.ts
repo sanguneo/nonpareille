@@ -50,6 +50,6 @@ console.log(JSON.stringify({ path: out, model: "fake" }));
     const p = createCodexImageProvider({ skillDir: join(tmpdir(), "dot-nonexistent-skill") });
     const err = await p.generate({ prompt: "hi", size: [8, 8] }).catch((e: unknown) => e);
     expect(err).toBeInstanceOf(ProviderError);
-    expect((err as Error).message).toContain("DOT_CODEX_IMAGE_SKILL_DIR");
+    expect((err as Error).message).toContain("NONPAREILLE_CODEX_IMAGE_SKILL_DIR");
   });
 });

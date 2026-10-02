@@ -12,7 +12,7 @@ import { specFromArgs } from "./prompt.ts";
 import type { CommandModule } from "./types.ts";
 
 export const summary = "generate a dot sprite with an AI image provider";
-export const usage = "usage: dot gen --subject <text> --size 32x32 --palette pico8 --provider codex-image [--ref a.png,b.png] [--retries 0] [--seed N] [--view side] [--outline none|black|selout] [--scale 8] [--json] -o out.dot.json|out.png";
+export const usage = "usage: nonpareille gen --subject <text> --size 32x32 --palette pico8 --provider codex-image [--ref a.png,b.png] [--retries 0] [--seed N] [--view side] [--outline none|black|selout] [--scale 8] [--json] -o out.dot.json|out.png";
 
 const MODEL_FOR_PROVIDER: Record<string, GenSpec["model"]> = {
   "codex-image": "codex-image",
@@ -42,7 +42,7 @@ export async function run(argv: string[]): Promise<number> {
     writeFileSync(out, encodeRGBAPNG(renderRGBA(grid, canvas)));
   } else {
     const doc = gridToDocument(grid);
-    doc.meta = { source: providerId, prompt: buildImagePrompt(spec, colors).prompt, tool: "dot gen",
+    doc.meta = { source: providerId, prompt: buildImagePrompt(spec, colors).prompt, tool: "nonpareille gen",
       ...(spec.seed !== undefined ? { seed: spec.seed } : {}) };
     writeFileSync(out, serializeDocument(doc));
   }

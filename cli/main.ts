@@ -4,7 +4,7 @@ import { commands } from "./registry.ts";
 
 function printHelp(): void {
   const names = Object.keys(commands).sort();
-  const lines = ["dot - dot (pixel-art) image engine", "", "usage: dot <command> [options]", "", "commands:"];
+  const lines = ["nonpareille - dot (pixel-art) image engine", "", "usage: nonpareille <command> [options]", "", "commands:"];
   for (const n of names) lines.push(`  ${n}`);
   lines.push("", "Run `dot <command> --help` for command options.");
   console.log(lines.join("\n"));
@@ -24,7 +24,7 @@ export async function main(argv: string[]): Promise<number> {
   }
   const mod = await load();
   if (rest.includes("--help") || rest.includes("-h")) {
-    console.log(`dot ${cmd} - ${mod.summary}\n\n${mod.usage}`);
+    console.log(`nonpareille ${cmd} - ${mod.summary}\n\n${mod.usage}`);
     return 0;
   }
   try {

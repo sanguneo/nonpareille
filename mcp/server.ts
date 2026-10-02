@@ -66,7 +66,7 @@ const text = (value: unknown) => ({
 });
 
 export function createDotMcpServer(): McpServer {
-  const server = new McpServer({ name: "dother", version: "0.1.0" });
+  const server = new McpServer({ name: "nonpareille", version: "0.1.0" });
   const docs = new Map<string, Doc>();
   let nextId = 1;
 
@@ -260,7 +260,7 @@ export function createDotMcpServer(): McpServer {
     inputSchema: { docId, scale: z.number().int().min(1).max(64), gap: z.number().int().min(0).optional() },
   }, ({ docId: id, scale, gap }) => {
     const doc = getDoc(id);
-    const path = join(tmpdir(), "dother-mcp", `${id}-${++doc.previews}.png`);
+    const path = join(tmpdir(), "nonpareille-mcp", `${id}-${++doc.previews}.png`);
     mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, encodeRGBAPNG(renderRGBA(doc.grid, canvasFor(doc.grid, scale, gap ?? 0))));
     return text({ path });

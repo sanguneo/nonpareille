@@ -8,7 +8,7 @@ import { gridToDocument, serializeDocument } from "../../src/io/project.ts";
 import type { CommandModule } from "./types.ts";
 
 export const summary = "create an empty .dot.json / .dot.txt document";
-export const usage = `usage: dot new --size 32x32 [--palette #rrggbb,#rrggbb,...] -o hero.dot.json|hero.dot.txt`;
+export const usage = `usage: nonpareille new --size 32x32 [--palette #rrggbb,#rrggbb,...] -o hero.dot.json|hero.dot.txt`;
 
 export function parseHexColor(s: string): number {
   if (!/^#[\da-fA-F]{6}(?:[\da-fA-F]{2})?$/.test(s)) throw new InputError(`invalid color "${s}"`);

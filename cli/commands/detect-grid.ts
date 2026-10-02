@@ -5,7 +5,7 @@ import { flagStr, parseArgs, parseSize } from "../args.ts";
 import type { CommandModule } from "./types.ts";
 
 export const summary = "detect an AI image's logical pixel grid";
-export const usage = "usage: dot detect-grid <image> [--expect 64x64] --json";
+export const usage = "usage: nonpareille detect-grid <image> [--expect 64x64] --json";
 
 export async function run(argv: string[]): Promise<number> {
   const args = parseArgs(argv);

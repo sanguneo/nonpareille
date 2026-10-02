@@ -10,10 +10,10 @@ import { parseHexColor } from "./new.ts";
 import type { CommandModule } from "./types.ts";
 
 export const summary = "extract, fetch, convert or build color palettes";
-export const usage = `usage: dot palette extract <in.png> -k 16 [-o f.hex]
-       dot palette fetch <lospec-slug> [-o f.hex]
-       dot palette convert <a.gpl> <b.hex>
-       dot palette ramp --base #b13e53 -n 5 [-o f.hex]`;
+export const usage = `usage: nonpareille palette extract <in.png> -k 16 [-o f.hex]
+       nonpareille palette fetch <lospec-slug> [-o f.hex]
+       nonpareille palette convert <a.gpl> <b.hex>
+       nonpareille palette ramp --base #b13e53 -n 5 [-o f.hex]`;
 
 type Format = "hex" | "gpl" | "pal";
 
@@ -51,7 +51,7 @@ export async function run(argv: string[]): Promise<number> {
       emit(await fetchLospec(a), out);
       return 0;
     case "convert": {
-      if (!a || !b) throw new InputError("usage: dot palette convert <in> <out>");
+      if (!a || !b) throw new InputError("usage: nonpareille palette convert <in> <out>");
       emit(parsePaletteFile(readFileSync(a, "utf8"), formatOf(a)), b);
       return 0;
     }
