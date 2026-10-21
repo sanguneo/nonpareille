@@ -71,7 +71,9 @@ export function snapImage(
   const est = detectGrid(img, o.expect ? { periodX: img.width / o.expect[0] } : undefined);
   if (est.confidence >= 0.15) {
     const result = snap(img, est, o);
-    return { ...result, confidence: est.confidence };
+    if (!o.expect || (result.grid.width === o.expect[0] && result.grid.height === o.expect[1])) {
+      return { ...result, confidence: est.confidence };
+    }
   }
   if (!o.expect) return { ...snap(img, est, o), confidence: est.confidence };
   const [W, H] = o.expect;
