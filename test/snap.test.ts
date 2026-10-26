@@ -1,4 +1,5 @@
 import { test, expect } from "bun:test";
+import fc from "fast-check";
 import { makeSynthetic } from "./fixtures/synth.ts";
 import { snapImage } from "../src/convert/snap.ts";
 import { run } from "../cli/commands/snap.ts";
@@ -19,6 +20,31 @@ test("snaps a 7.5px synthetic grid with cell accuracy above 99%", () => {
     if (actual === grid[i]) correct++;
   }
   expect(correct / grid.length).toBeGreaterThanOrEqual(0.99);
+});
+
+test("expect sets the output size even when a confident grid of another size is detected", () => {
+  for (const { W, H, want } of [
+    { W: 4, H: 5, want: [4, 4] as [number, number] },
+    { W: 8, H: 8, want: [6, 8] as [number, number] },
+  ]) {
+    const { img } = makeSynthetic({ W, H, scale: 4, phaseX: 0, phaseY: 0, noise: 0, blur: false, seed: 9 });
+    const result = snapImage(img, { expect: want });
+    expect(result.confidence).toBeGreaterThanOrEqual(0.15);
+    expect(result.grid.width).toBe(want[0]);
+    expect(result.grid.height).toBe(want[1]);
+  }
+});
+
+test("snapImage output is always the expected size", () => {
+  const image = fc.record({
+    W: fc.integer({ min: 1, max: 12 }), H: fc.integer({ min: 1, max: 12 }),
+    scale: fc.integer({ min: 1, max: 6 }), seed: fc.integer({ min: 0, max: 1000 }),
+  }).map(o => makeSynthetic({ ...o, phaseX: 0, phaseY: 0, noise: 0, blur: false }).img);
+  const size = fc.integer({ min: 1, max: 12 });
+  fc.assert(fc.property(image, size, size, (img, W, H) => {
+    const { grid } = snapImage(img, { expect: [W, H] });
+    expect([grid.width, grid.height]).toEqual([W, H]);
+  }), { numRuns: 200 });
 });
 
 test("snap command writes a PNG and returns zero with JSON reporting", async () => {
